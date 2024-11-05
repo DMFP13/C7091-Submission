@@ -1,0 +1,67 @@
+---
+title: "C7091 Mini Project"
+author: "Dan Peters"
+date: "`r Sys.Date()`"
+format: html
+---
+
+```{r}
+# Load and check that necessary libraries are installed
+if (!require(ggplot2)) install.packages('ggplot2', dependencies = TRUE)
+if (!require(dplyr)) install.packages('dplyr', dependencies = TRUE)
+if (!require(car)) install.packages('car', dependencies = TRUE)
+if (!require(emmeans)) install.packages('emmeans', dependencies = TRUE)
+if (!require(readxl)) install.packages('readxl', dependencies = TRUE)
+if (!require(writexl)) install.packages('writexl', dependencies = TRUE)
+
+#Load relevant libraries
+library(ggplot2)
+library(dplyr)
+library(car)
+library(emmeans)
+library(readxl)
+library(writexl)
+
+# Load the data from the Excel file downloaded from the C7091 website
+data_path <- "/Users/mac1/Downloads/data (1).xlsx" 
+data <- read_excel(data_path, sheet = "data")
+
+# Display the first few rows of the data for a quick check and overview
+head(data)
+
+# soil and yr are converted to factors to ensure that they are treated as categorical variables rather than continuous or numeric variables
+data$soil <- as.factor(data$soil)
+data$yr <- as.factor(data$yr)
+
+# Convert Yield to numeric and handle non-numeric values
+data$Yield <- as.numeric(data$Yield)
+data <- data %>% filter(!is.na(Yield))  # Remove rows with NA in Yield
+
+# Perform two-way ANOVA using aov
+anova_result <- aov(Yield ~ soil * yr + rep, data = data)
+summary(anova_result)
+
+# Perform post hoc test using emmeans
+posthoc_result <- emmeans(anova_result, pairwise ~ soil * yr)
+print(posthoc_result)
+
+# Visualise the yield by treatment and year
+ggplot(data, aes(x = soil, y = Yield, fill = yr)) +
+  geom_boxplot() +
+  labs(title = "Yield by Treatment and Year",
+       x = "Treatment",
+       y = "Yield") +
+  theme_minimal()
+
+# generate a diagnostic plot to visually assess the normality of residuals in an ANOVA model
+plot(anova_result, which = 1)
+
+# Test for homogeneity of variance, checking whether the variance of the dependent variable (Yield) is consistent across the different levels of the interaction between soil and yr
+leveneTest(Yield ~ soil * yr, data = data)
+
+# Display post hoc results as a data frame
+posthoc_df <- as.data.frame(posthoc_result$contrasts)
+print("Post hoc comparison results:")
+print(posthoc_df)
+
+```
