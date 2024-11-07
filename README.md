@@ -25,16 +25,16 @@ https://rpubs.com/DanJPeters/1242379
 This is the rendered versions of the Quarto document whioch hopefully provide clear, accessible display of the answers and code.
 The HTML output ensures that the content is accessible without needing to run the code.
 
-Repository Contents
-Problem_Sets.qmd: The main Quarto document containing the problem set solutions, with inline comments for each line of code.
+Repository ContentsC7091 
+C7091 Mini Project Final Draft.html
+C7091 Mini Project Final Draft.qmd
+Dpeters C7091 Problem Set Final Draft.html
+Dpeters C7091 Problem Set Final Draft
+The main Quarto document containing the problem set solutions, with inline comments for each line of code.
 Problem_Sets.html: The rendered HTML output of the Quarto document for easy viewing. I was unable to publish this appropriately in GitHub hence the additional rpub links
 
 README.md: This file, providing an overview of the repository and its contents.
 
-The code was written using R, and the relevant pacjkages required to run the code are listed at the top of the .qmd files.
+The code was written using R, and the relevant pacjkages required to run the code are listed in relevant sections
 
-dplyr: For data manipulation.
-ggplot2: For data visualization.
-quarto: For document compilation and rendering.
-To install the necessary packages, use:
 
