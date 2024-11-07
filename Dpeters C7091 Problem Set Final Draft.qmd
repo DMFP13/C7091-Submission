@@ -135,7 +135,7 @@ The `emmeans` function calculates estimated marginal means for the specified lev
 ## Answer 6
 
 ```{r}
-# Load package for data wrangling
+# Load package 
 install.packages('dplyr')
 library(dplyr)  # The dplyr package helps with data manipulation like grouping and summarizing data.
 
@@ -254,7 +254,7 @@ element
 
 ### Explanation
 
--   **List Structure**: `my_list` is a nested list where each level has sub-lists. It goes three levels deep, so to reach the innermost elements, we need to use multiple levels of indexing.
+-   **List Structure**: `my_list` is a nested list where each level has sub-lists. It goes three levels deep, so to reach the innermost elements, i used multiple levels of indexing.
 
 -   **Indexing Explanation**: To access a specific element (in this case, the number 11), I use double square brackets `[[ ]]` to drill down into each level:
 
