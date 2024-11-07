@@ -2,7 +2,9 @@
 
 **Author**: Dan Peters  
 **Module**: C7091  
-**Date**: October 23, 2024  
+**Date**: October 23, 2024 
+
+Rendered Version https://rpubs.com/DanJPeters/1242379
 
 This repository contains solutions to R programming tasks focused on data manipulation, statistical analysis, and visualization. Key tasks involve calculations, data filtering, plotting, and statistical tests using popular R libraries.
 
