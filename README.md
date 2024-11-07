@@ -16,16 +16,15 @@ Quarto Document (.qmd):
 
 This document includes solutions to all problem sets provided in the course.
 Each solution contains commented R code that demonstrates the process used to answer each question.
-The document is designed for easy readability and contains explanations for each step in the code, helping showcase my approach to solving the problems.
+I have struggled with the statistical elements of this assignment but hope that this contains reasonable explanations for each step in the code and my approach to solving the problems.
 
 HTML Output (.html): viewable here: 
 https://rpubs.com/DanJPeters/1241449
 https://rpubs.com/DanJPeters/1242379
 
-
-
-This is the rendered version of the Quarto document, providing a clear, accessible display of the answers and code.
+This is the rendered versions of the Quarto document whioch hopefully provide clear, accessible display of the answers and code.
 The HTML output ensures that the content is accessible without needing to run the code.
+
 Repository Contents
 Problem_Sets.qmd: The main Quarto document containing the problem set solutions, with inline comments for each line of code.
 Problem_Sets.html: The rendered HTML output of the Quarto document for easy viewing. I was unable to publish this appropriately in GitHub hence the additional rpub links
