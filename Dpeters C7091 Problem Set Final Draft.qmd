@@ -67,7 +67,7 @@ The `d` argument in the `pwr.t.test()` function represents the "effect size." Th
 ## Answer 4
 
 ```{r}
-# Your R code goes here
+
 set.seed(123)
 matrix_with_na <- matrix(sample(c(NA, 1:9), 9, replace = TRUE), nrow = 3)
 copy_of_original <- matrix_with_na
