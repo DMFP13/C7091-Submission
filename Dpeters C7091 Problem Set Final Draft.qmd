@@ -1,0 +1,267 @@
+---
+title: "DPeters C7091"
+format: html
+execute:
+  echo: true 
+---
+
+```{r}
+# Set a CRAN mirror for package installations
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+# Load necessary libraries
+library(emmeans)
+```
+
+## Answer 1
+
+```{r}
+# Load the ggplot2 package to access the mpg dataset
+library(ggplot2)
+
+# Load the mpg dataset explicitly
+data(mpg)
+
+# Scatter plot with base R
+plot(mpg$displ, mpg$hwy, col = as.factor(mpg$year), 
+     xlab = "Displacement", ylab = "Highway Miles per Gallon", pch = 19)
+
+# Add a legend to differentiate the years
+legend("topright", legend = unique(mpg$year), col = unique(as.factor(mpg$year)), pch = 19)
+
+# Use base R to filter the data where cyl equals 8
+subset(mpg, cyl == '8')
+
+```
+
+## Answer 2
+
+```{r}
+# 1. Input the dimensions of the cylinder
+height <- 3.2
+radius <- 5.5
+
+# 2. Use the formula to calculate the volume of a cylinder
+volume <- pi * radius^2 * height
+
+# 3. Round volume to 2 decimal places
+rounded_volume <- round(volume, 2)
+
+# Display the answer
+rounded_volume
+
+```
+
+## Answer 3
+
+```{r}
+# Load the pwr package
+library(pwr)
+
+# Example: Calculate the required sample size (n)
+# Using an effect size (d) of 0.5, power of 0.8, and significance level of 0.05
+pwr.t.test(d = 0.5, power = 0.8, sig.level = 0.05, type = "two.sample")
+```
+
+The `d` argument in the `pwr.t.test()` function represents the "effect size." This is the difference between the means that you are trying to detect, divided by the standard deviation. In simple terms, it's a way to measure how big or small the effect you are looking for is.
+
+## Answer 4
+
+```{r}
+# Your R code goes here
+set.seed(123)
+matrix_with_na <- matrix(sample(c(NA, 1:9), 9, replace = TRUE), nrow = 3)
+copy_of_original <- matrix_with_na
+matrix_with_na[1, 2] <- NA
+matrix_with_na[2, 3] <- NA
+matrix_with_na[3, 1] <- NA
+print("Original Matrix with NAs:")
+print(matrix_with_na)
+list_with_values <- as.list(as.character(matrix(1:9, nrow = 3)))
+print(list_with_values)
+for (i in 1:3) {
+  for (j in 1:3) {
+    if (is.na(matrix_with_na[i, j])) {
+      matrix_with_na[i, j] <- list_with_values[[(i - 1) * 3 + j]]
+    }
+  }
+}
+print("Matrix after filling NAs:")
+print(matrix_with_na)
+mean_matrix <- mean(copy_of_original, na.rm = TRUE)
+mean_of_original_copy <- mean(copy_of_original, na.rm = TRUE)
+print("Mean of original matrix copy (with NAs removed):")
+print(mean_of_original_copy)
+print("Mean of filled matrix:")
+print(mean_matrix)
+```
+
+## Answer 5
+
+The function provided doesn't worke because `comparisons$species` is not a valid column in the `comparisons` object created by `emmeans`. The correct column names need to be used to create the data frame to ensure that the appropriate fields for `Species`, `estimate`, and `p.value` are being extracted
+
+```{r}
+# Load necessary package
+install.packages('emmeans')
+library(emmeans)
+
+
+
+run_anova_posthoc <- function() {
+  # Perform ANOVA on the iris dataset
+  anova_result <- aov(Sepal.Length ~ Species, data = iris)
+  
+  # Perform post-hoc test using emmeans
+  posthoc_result <- emmeans(anova_result, pairwise ~ Species)
+  
+  # Extract comparisons as a data frame
+  comparisons <- as.data.frame(posthoc_result$contrasts)
+  
+  # Creating the output data frame with correct column names
+  comparisons_df <- data.frame(Species_Comparison = comparisons$contrast,
+                               Estimate = comparisons$estimate,
+                               P_Value = comparisons$p.value)
+  
+  return(comparisons_df)
+}
+
+run_anova_posthoc()
+
+```
+
+### Explanation
+
+The `emmeans` function calculates estimated marginal means for the specified levels of a factor in a model. Here, it compares the mean Sepal Length between different `Species` in the `iris` dataset. The `contrast` column contains the species pairs being compared, `estimate` shows the difference in means between the species, and `p.value` indicates the statistical significance of each comparison.
+
+## Answer 6
+
+```{r}
+# Load necessary package for data wrangling
+install.packages('dplyr')
+library(dplyr)  # The dplyr package helps with data manipulation like grouping and summarizing data.
+
+# Step 1: Calculate the overall mean of Sepal Length
+overall_mean <- mean(iris$Sepal.Length)
+# `mean()` is a base R function that calculates the average of all Sepal Length values.
+
+# Step 2: Calculate the mean Sepal Length for each Species
+species_means <- iris %>%
+  group_by(Species) %>%            # `group_by()` (from dplyr) organizes data by Species.
+  summarise(mean_sepal_length = mean(Sepal.Length))  # `summarise()` calculates the mean Sepal Length for each Species group.
+
+# Step 3: Calculate the Total Sum of Squares (SST)
+sst <- sum((iris$Sepal.Length - overall_mean)^2)
+# The total sum of squares (SST) is calculated by squaring the differences between each Sepal Length and the overall mean, then adding them up.
+
+# Step 4: Calculate the Sum of Squares Between Groups (SSB)
+ssb <- sum(table(iris$Species) * (species_means$mean_sepal_length - overall_mean)^2)
+# `table(iris$Species)` counts the number of each Species, and we multiply these counts by the squared differences between each Species mean and the overall mean.
+
+# Step 5: Calculate the Sum of Squares Within Groups (SSW)
+ssw <- sum((iris %>% 
+              left_join(species_means, by = "Species") %>%  # `left_join()` (from dplyr) combines the species means with the original data based on Species.
+              mutate(squared_diff = (Sepal.Length - mean_sepal_length)^2))$squared_diff)
+# Here, `mutate()` (from dplyr) creates a new column for each row showing the squared difference between Sepal Length and the Species mean.
+
+# Step 6: Calculate the Degrees of Freedom
+df_between <- length(unique(iris$Species)) - 1  # Degrees of freedom between groups (number of species - 1)
+df_within <- nrow(iris) - length(unique(iris$Species))  # Degrees of freedom within groups (total rows - number of species)
+
+# Step 7: Calculate the Mean Squares
+ms_between <- ssb / df_between  # Mean square between groups is the SSB divided by df_between.
+ms_within <- ssw / df_within    # Mean square within groups is the SSW divided by df_within.
+
+# Step 8: Calculate the F Statistic
+f_statistic <- ms_between / ms_within
+f_statistic  # Print the F statistic
+
+```
+
+### Explanation of Each Step
+
+1.  **Overall Mean**: The average Sepal Length for all flowers in the dataset.
+
+2.  **Group Means (Species Means)**: The average Sepal Length for each species.
+
+3.  **Total Sum of Squares (SST)**: Measures how much all Sepal Length values differ from the overall mean.
+
+4.  **Sum of Squares Between Groups (SSB)**: Measures how much each species mean differs from the overall mean, adjusted by the number of flowers in each species.
+
+5.  **Sum of Squares Within Groups (SSW)**: Measures the variation within each species group, calculated by finding how much each Sepal Length differs from its own species mean.
+
+6.  **Degrees of Freedom**: Adjustments made based on the number of groups and total samples.
+
+7.  **Mean Squares**: Calculated by dividing the sum of squares by their respective degrees of freedom.
+
+8.  **F Statistic**: The ratio of the mean squares between groups to the mean squares within groups, which identifies whether the species means are significantly different.
+
+The F statistic is the final result, and states whether there is likely a significant difference in Sepal Length between the species in the dataset.
+
+## Answer 7
+
+### Question
+
+Using the `iris` dataset in R, calculate the total variation (Sum of Squares Total, SST) and explain what this value represents in the context of the data. Use the `mean()` and `sum()` functions to perform this calculation and explain what each function is doing.
+
+```{r}
+# Step 1: Calculate the overall mean of Sepal Length
+overall_mean <- mean(iris$Sepal.Length)
+# The `mean()` function calculates the average value of Sepal Length for all flowers in the dataset.
+
+# Step 2: Calculate the Sum of Squares Total (SST)
+sst <- sum((iris$Sepal.Length - overall_mean)^2)
+# Here, we subtract the overall mean from each Sepal Length value, square the differences, and then add them up with `sum()`.
+# `sum()` adds up all the squared differences to get the total variation (SST) across all data points.
+
+# Print the Sum of Squares Total
+sst
+
+```
+
+### Explanation
+
+The **Sum of Squares Total (SST)** is a measure of the total variation in Sepal Length across all flowers in the dataset. It represents how much each Sepal Length measurement differs from the overall average Sepal Length. If SST is large, it means there’s a lot of variation in Sepal Length measurements in the dataset. This value helps to understand the spread of Sepal Length values around the overall average.
+
+## Answer 8
+
+To create a nested list with three levels and then access a specific element, I need to define the list structure without using any names.
+
+```{r}
+# Step 1: Create a nested list with three levels
+my_list <- list(
+  list(
+    list(1, 2, 3),      # First nested list at the deepest level
+    list(4, 5, 6)       # Second nested list at the deepest level
+  ),
+  list(
+    list(7, 8, 9),      # Third nested list at the deepest level
+    list(10, 11, 12)    # Fourth nested list at the deepest level
+  )
+)
+
+# Step 2: Access a specific element from within the deepest level
+# For example, I want to access the number 11 from the deepest level
+
+element <- my_list[[2]][[2]][[2]]
+# Explanation of indexing:
+# - my_list[[2]] selects the second top-level element in my_list.
+# - [[2]] within that element selects the second list within the second top-level list.
+# - [[2]] within that sub-list selects the second element within the second list, which is 11.
+
+# Print the accessed element
+element
+
+```
+
+### Explanation
+
+-   **List Structure**: `my_list` is a nested list where each level has sub-lists. It goes three levels deep, so to reach the innermost elements, we need to use multiple levels of indexing.
+
+-   **Indexing Explanation**: To access a specific element (in this case, the number 11), I use double square brackets `[[ ]]` to drill down into each level:
+
+    -   `my_list[[2]]` accesses the second list in the top-level list.
+
+    -   Then, `[[2]]` goes to the second list within this selected list.
+
+    -   Finally, `[[2]]` picks the second element in that inner list, which equals 11.
+
+The output for this code will be `11`, as that’s the element I targeted in the deepest level of nesting.
