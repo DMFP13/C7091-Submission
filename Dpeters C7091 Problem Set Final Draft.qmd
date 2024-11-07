@@ -135,7 +135,7 @@ The `emmeans` function calculates estimated marginal means for the specified lev
 ## Answer 6
 
 ```{r}
-# Load necessary package for data wrangling
+# Load package for data wrangling
 install.packages('dplyr')
 library(dplyr)  # The dplyr package helps with data manipulation like grouping and summarizing data.
 
